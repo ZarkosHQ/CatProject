@@ -1,11 +1,22 @@
 const dbo = require("../db/conn");
 const argon = require("argon2");
-
-module.exports =  (app) => {
+const { 
+    v4: uuidv4
+} = require('uuid');
+  
+module.exports = (app) => {
     app.post("/auth/signup", async (request, response) => {
+        if (!request.body.email || !request.body.password || !request.body.firstName || !request.body.lastName) {
+            response.status(400).send({
+                status: 'failed',
+                reason: 'not enough required information'
+            })
+            return;
+        }
         const user = dbo.collection("user");
         user.insertOne({
-            username: request.body.username,
+            firstName: request.body.firstName,
+            lastName: request.bdoy.lastName,
             email: request.body.email,
             password: await argon.hash(request.body.password)
         }).then(() => {
@@ -36,9 +47,16 @@ module.exports =  (app) => {
             let authResult = argon.verify(toAuth.password, request.body.password);
             if (authResult) {
                 // TODO: create cookie or other auth token and return it to authenticate subsequent requests
+                const t = uuidv4();
+                const tokenCursor = dbo.collection("tokens");
+                tokenCursor.insertOne({
+                    user: toAuth._id,
+                    token: t
+
+                });
                 response.send({
                     status: 'success',
-                    user: toAuth
+                    token: t
                 });
             }
             else {
