@@ -36,18 +36,33 @@ function LoginScreenBase({children}){
 }
 
 function LoginForm(){
+    const [email, setEmail] = useState()
+    const [password, setPassword] = useState()
     const nav = useNavigate();
+
+    const handleSubmit = (e) => {
+        e.preventDefault()
+        axios.post('http://localhost:5000/auth/login', {email: email, password: password})
+        .then(result => {console.log(result)
+            if(result.data.status == "success"){
+                localStorage.setItem("token", result.data.token)
+                nav("/DashBoard")
+            }
+            else console.log(result.data.reason)
+        })
+        .catch(err=> alert(err.response.data.reason))
+    }
 
     return(
         <div className="LoginForm">
             
             <div className="InputFields">
                 <strong>Email</strong>
-                <input type="email" placeholder="Ex. Example@email.com" />
+                <input type="email" placeholder="Ex. Example@email.com" onChange={(e) => setEmail(e.target.value)} />
             </div>
             <div className="InputFields">
-                <strong>Pasword</strong>
-                <input type="password" placeholder="Enter password" />
+                <strong>Password</strong>
+                <input type="password" placeholder="Enter password" onChange={(e) => setPassword(e.target.value)}/>
             </div>
 
             <strong>OR</strong>
@@ -58,7 +73,7 @@ function LoginForm(){
 
             <div>
                 <button onClick={()=>{nav("/SignUp")}}> Create Account</button>
-                <button onClick={()=>{nav("/DashBoard")}}> Login </button>
+                <button onClick={handleSubmit}> Login </button>
             </div>
         </div>
     )
@@ -101,7 +116,7 @@ function CreateSellerForm(){
         .then(result => {console.log(result)
             navigate("/login")
         })
-        .catch(err=> console.log("NIGHTMARE NIGHTMARE NIGHTMARE"))
+        .catch(err=> console.log("Account Creation Failed"))
     }
 
     return (
@@ -161,7 +176,7 @@ function CreateBuyerForm(){
         .then(result => {console.log(result)
             navigate("/login")
         })
-        .catch(err=> console.log("NIGHTMARE NIGHTMARE NIGHTMARE"))
+        .catch(err=> console.log("Account Creation Failed"))
     }
 
     return (
