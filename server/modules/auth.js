@@ -16,7 +16,7 @@ module.exports = (app) => {
         const user = dbo.collection("user");
         user.insertOne({
             firstName: request.body.firstName,
-            lastName: request.bdoy.lastName,
+            lastName: request.body.lastName,
             email: request.body.email,
             password: await argon.hash(request.body.password)
         }).then(() => {
