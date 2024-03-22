@@ -1,6 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import "./Login.scss";
 import { useState } from "react";
+import axios from "axios";
 
 
 
@@ -88,69 +89,100 @@ function CreateAccountForm(){
 }
 
 function CreateSellerForm(){
+    const [firstName, setFirstName] = useState()
+    const [lastName, setLastName] = useState()
+    const [email, setEmail] = useState()
+    const [password, setPassword] = useState()
+    const navigate = useNavigate()
+
+    const handleSubmit = (e) => {
+        e.preventDefault()
+        axios.post('http://localhost:5000/auth/signup', {firstName:firstName, lastName: lastName, email: email, password: password})
+        .then(result => {console.log(result)
+            navigate("/login")
+        })
+        .catch(err=> console.log("NIGHTMARE NIGHTMARE NIGHTMARE"))
+    }
+
     return (
         <div className="SellerForm">
             <h2>Join as Vender</h2>
             <strong>Contact information</strong>
             <div className="InputFields">
                 <strong>First Name</strong>
-                <input type="email" placeholder="Ex. Example@email.com" />
+                <input type="text" placeholder="Ex. Example@email.com" onChange={(e) => setFirstName(e.target.value)} />
             </div>
             <div className="InputFields">
                 <strong>Last Name</strong>
-                <input type="email" placeholder="Ex. Example@email.com" />
+                <input type="text" placeholder="Ex. Example@email.com" onChange={(e) => setLastName(e.target.value)} />
             </div>
             <div className="InputFields">
                 <strong>Email</strong>
-                <input type="email" placeholder="Ex. Example@email.com" />
+                <input type="email" placeholder="Ex. Example@email.com" onChange={(e) => setEmail(e.target.value)} />
             </div>
             <div className="InputFields">
                 <strong>Password</strong>
-                <input type="email" placeholder="Ex. Example@email.com" />
+                <input type="password" placeholder="Ex. Example@email.com" onChange={(e) => setPassword(e.target.value)} />
             </div>
 
-            <strong>Buisiness information</strong>
+            <strong>Business information</strong>
 
             <div className="InputFields">
                 <strong>I dont know</strong>
-                <input type="email" placeholder="Ex. Example@email.com" />
+                <input type="text" placeholder="Ex. Example@email.com" />
             </div>
             <div className="InputFields">
-                <strong>what this crap says</strong>
-                <input type="email" placeholder="Ex. Example@email.com" />
+                <strong>what s crap says</strong>
+                <input type="text" placeholder="Ex. Example@email.com" />
             </div>
             <div className="InputFields">
                 <strong>LegalBuisines Name</strong>
-                <input type="email" placeholder="Ex. Example@email.com" />
+                <input type="text" placeholder="Ex. Example@email.com" />
             </div>
             <div className="InputFields">
                 <strong>What?</strong>
                 <select></select>
             </div>
-            <button>Continue to Verify</button>
+            <button onClick = {handleSubmit}>Continue to Verify</button>
         </div>
     )
 }
 function CreateBuyerForm(){
+    const [firstName, setFirstName] = useState()
+    const [lastName, setLastName] = useState()
+    const [email, setEmail] = useState()
+    const [password, setPassword] = useState()
+    const navigate = useNavigate()
+
+    const handleSubmit = (e) => {
+        e.preventDefault()
+        axios.post('http://localhost:5000/auth/signup', 
+        {firstName:firstName, lastName: lastName, email: email, password: password})
+        .then(result => {console.log(result)
+            navigate("/login")
+        })
+        .catch(err=> console.log("NIGHTMARE NIGHTMARE NIGHTMARE"))
+    }
+
     return (
         <div className="BuyerForm">
             <h2>Join as Customer</h2>
             <strong>Contact information</strong>
             <div className="InputFields">
                 <strong>First Name</strong>
-                <input type="email" placeholder="Ex. Example@email.com" />
+                <input type="email" placeholder="Ex. Example@email.com" onChange={(e) => setFirstName(e.target.value)}/>
             </div>
             <div className="InputFields">
                 <strong>Last Name</strong>
-                <input type="email" placeholder="Ex. Example@email.com" />
+                <input type="email" placeholder="Ex. Example@email.com" onChange={(e) => setLastName(e.target.value)}/>
             </div>
             <div className="InputFields">
                 <strong>Email</strong>
-                <input type="email" placeholder="Ex. Example@email.com" />
+                <input type="email" placeholder="Ex. Example@email.com" onChange={(e) => setEmail(e.target.value)}/>
             </div>
             <div className="InputFields">
                 <strong>Password</strong>
-                <input type="email" placeholder="Ex. Example@email.com" />
+                <input type="email" placeholder="Ex. Example@email.com" onChange={(e) => setPassword(e.target.value)}/>
             </div>
             <div className="InputFields">
                 <strong>Experience</strong>
@@ -160,11 +192,9 @@ function CreateBuyerForm(){
                 <strong>What are you currentinly in</strong>
                 <select></select>
             </div>
-            <button>Create Account</button>
+            <button onClick = {handleSubmit}>Create Account</button>
         </div>
     )
 }
-
-
 
 export{Template, LoginScreenBase, LoginForm, CreateAccountForm, CreateSellerForm, CreateBuyerForm}
