@@ -112,7 +112,7 @@ function CreateSellerForm(){
 
     const handleSubmit = (e) => {
         e.preventDefault()
-        axios.post('http://localhost:5000/auth/signup', {firstName:firstName, lastName: lastName, email: email, password: password})
+        axios.post('http://localhost:5000/auth/signup', {type: "seller", firstName:firstName, lastName: lastName, email: email, password: password})
         .then(result => {console.log(result)
             navigate("/login")
         })
@@ -172,7 +172,7 @@ function CreateBuyerForm(){
     const handleSubmit = (e) => {
         e.preventDefault()
         axios.post('http://localhost:5000/auth/signup', 
-        {firstName:firstName, lastName: lastName, email: email, password: password})
+        {type: "buyer",firstName:firstName, lastName: lastName, email: email, password: password})
         .then(result => {console.log(result)
             navigate("/login")
         })
