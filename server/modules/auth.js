@@ -10,7 +10,7 @@ module.exports = (app) => {
             response.status(400).send({
                 status: 'failed',
                 reason: 'not enough required information'
-            })
+            });
             return;
         }
         const user = dbo.collection("user");
@@ -24,9 +24,10 @@ module.exports = (app) => {
                 status: "success"
             })
         }).catch(() => {
-            response.send({
-                status: "failed"
-            })
+            response.status(500).send({
+                status: "failed",
+                reason: 'database error'
+            });
         });
     });
 
@@ -44,7 +45,7 @@ module.exports = (app) => {
             email: request.body.email
         });
         if (toAuth) {
-            let authResult = argon.verify(toAuth.password, request.body.password);
+            let authResult = await argon.verify(toAuth.password, request.body.password);
             if (authResult) {
                 // TODO: create cookie or other auth token and return it to authenticate subsequent requests
                 const t = uuidv4();
