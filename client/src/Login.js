@@ -1,8 +1,43 @@
 import { useNavigate } from "react-router-dom";
 import "./Login.scss";
+import "./branding.scss";
 import { useState } from "react";
 import axios from "axios";
 
+function openModal(header, message){
+    const modal = document.getElementById("MyModal");
+    const modalHeader = document.getElementById("ModalHeader");
+    const modalMessage = document.getElementById("ModalMessage");
+
+    if (modal && modalHeader && modalMessage) {
+        modalHeader.textContent = header;
+        modalMessage.textContent = message;
+        modal.style.display = "flex";
+    }
+}
+function closeModal() {
+    const modal = document.getElementById("MyModal");
+    const modalHeader = document.getElementById("ModalHeader");
+    const modalMessage = document.getElementById("ModalMessage");
+    if (modal && modalHeader && modalMessage) {
+        modalHeader.textContent = "";
+        modalMessage.textContent = "";
+        modal.style.display = "none";
+    }
+}
+
+function Modal() {
+
+    return(
+        <div id={"MyModal"} className="loginModal">
+            <div>
+                <strong id={"ModalHeader"}>{}</strong>
+                <p id={"ModalMessage"}>{}</p>
+                <button onClick={()=>closeModal()}>OK</button>
+            </div>
+        </div>
+    )
+}
 
 
 function Template({children}){
@@ -18,17 +53,19 @@ function Template({children}){
             </div>
             <div/>
             {children}
+            <Modal/>
         </div>
     );
 
 }
 
 function LoginScreenBase({children}){
+    const nav = useNavigate();
 
     return(
         <div className="SignUpPage">
             <div>
-                <img src="https://s7d2.scene7.com/is/image/Caterpillar/CM20220222-5c3c2-280a8?fmt=png-alpha" />
+                <img src="https://s7d2.scene7.com/is/image/Caterpillar/CM20220222-5c3c2-280a8?fmt=png-alpha" onClick={()=>nav("/")}/>
             </div>
             {children}
         </div>
@@ -50,7 +87,7 @@ function LoginForm(){
             }
             else console.log(result.data.reason)
         })
-        .catch(err=> alert(err.response.data.reason))
+        .catch(err => openModal("Login Failed",err.response.data.reason))
     }
 
     return(
@@ -67,8 +104,8 @@ function LoginForm(){
 
             <strong>OR</strong>
 
-            <button className="LinkButton">Continue with google</button>
-            <button className="LinkButton">Continue with facebook</button>
+            <button className="LinkButton">  <div className="google"></div> Continue with google</button>
+            <button className="LinkButton facebook"> <div>f</div> <span>Continue with facebook</span></button>
             <button className="LinkButton">Continue with pearson membership</button>
 
             <div>
@@ -116,7 +153,7 @@ function CreateSellerForm(){
         .then(result => {console.log(result)
             navigate("/login")
         })
-        .catch(err=> console.log("Account Creation Failed"))
+        .catch(err=> openModal("Login Failed","Account Creation Failed"))
     }
 
     return (
@@ -125,11 +162,11 @@ function CreateSellerForm(){
             <strong>Contact information</strong>
             <div className="InputFields">
                 <strong>First Name</strong>
-                <input type="text" placeholder="Ex. Example@email.com" onChange={(e) => setFirstName(e.target.value)} />
+                <input type="text" placeholder="Enter first name" onChange={(e) => setFirstName(e.target.value)} />
             </div>
             <div className="InputFields">
                 <strong>Last Name</strong>
-                <input type="text" placeholder="Ex. Example@email.com" onChange={(e) => setLastName(e.target.value)} />
+                <input type="text" placeholder="Enter last name" onChange={(e) => setLastName(e.target.value)} />
             </div>
             <div className="InputFields">
                 <strong>Email</strong>
@@ -137,36 +174,43 @@ function CreateSellerForm(){
             </div>
             <div className="InputFields">
                 <strong>Password</strong>
-                <input type="password" placeholder="Ex. Example@email.com" onChange={(e) => setPassword(e.target.value)} />
+                <input type="password" placeholder="EEnter password" onChange={(e) => setPassword(e.target.value)} />
             </div>
 
             <strong>Business information</strong>
 
             <div className="InputFields">
-                <strong>I dont know</strong>
-                <input type="text" placeholder="Ex. Example@email.com" />
+                <strong>Country</strong>
+                <input type="text" placeholder="Enter country of operation" />
             </div>
             <div className="InputFields">
-                <strong>what s crap says</strong>
-                <input type="text" placeholder="Ex. Example@email.com" />
+                <strong>Legal Buisines Name</strong>
+                <input type="text" placeholder="Enter name of buisiness" />
             </div>
             <div className="InputFields">
-                <strong>LegalBuisines Name</strong>
-                <input type="text" placeholder="Ex. Example@email.com" />
+                <strong>Buisines Identification Number(BIN)</strong>
+                <input type="text" placeholder="Bin number" />
             </div>
             <div className="InputFields">
-                <strong>What?</strong>
-                <select></select>
+                <strong>Inquiry Design</strong>
+                <select>
+                    <option>Modern</option>
+                    <option>Rustic</option>
+                    <option>Cost effective</option>
+                    <option>Large Scale Operation</option>
+                    <option>Custom</option>
+                </select>
             </div>
             <button onClick = {handleSubmit}>Continue to Verify</button>
         </div>
     )
 }
 function CreateBuyerForm(){
-    const [firstName, setFirstName] = useState()
-    const [lastName, setLastName] = useState()
-    const [email, setEmail] = useState()
-    const [password, setPassword] = useState()
+    const [firstName, setFirstName] = useState();
+    const [lastName, setLastName]   = useState();
+    const [email, setEmail]         = useState();
+    const [password, setPassword]   = useState();
+    const [country, setCountry]     = useState();
     const navigate = useNavigate()
 
     const handleSubmit = (e) => {
@@ -176,7 +220,7 @@ function CreateBuyerForm(){
         .then(result => {console.log(result)
             navigate("/login")
         })
-        .catch(err=> console.log("Account Creation Failed"))
+        .catch(err=> openModal("Login Failed","Account Creation Failed"))
     }
 
     return (
@@ -185,11 +229,15 @@ function CreateBuyerForm(){
             <strong>Contact information</strong>
             <div className="InputFields">
                 <strong>First Name</strong>
-                <input type="email" placeholder="Ex. Example@email.com" onChange={(e) => setFirstName(e.target.value)}/>
+                <input type="text" placeholder="Enter first name" onChange={(e) => setFirstName(e.target.value)}/>
             </div>
             <div className="InputFields">
                 <strong>Last Name</strong>
-                <input type="email" placeholder="Ex. Example@email.com" onChange={(e) => setLastName(e.target.value)}/>
+                <input type="text" placeholder="Enter last name" onChange={(e) => setLastName(e.target.value)}/>
+            </div>
+            <div className="InputFields">
+                <strong>Country</strong>
+                <input type="text" placeholder="Enter country" onChange={(e) => setCountry(e.target.value)}/>
             </div>
             <div className="InputFields">
                 <strong>Email</strong>
@@ -197,15 +245,22 @@ function CreateBuyerForm(){
             </div>
             <div className="InputFields">
                 <strong>Password</strong>
-                <input type="email" placeholder="Ex. Example@email.com" onChange={(e) => setPassword(e.target.value)}/>
+                <input type="password" placeholder="Enter a password" onChange={(e) => setPassword(e.target.value)}/>
             </div>
             <div className="InputFields">
                 <strong>Experience</strong>
-                <input type="email" placeholder="Ex. Example@email.com" />
+                <input type="text" placeholder="Describe your expertise" />
             </div>
             <div className="InputFields">
-                <strong>What are you currentinly in</strong>
-                <select></select>
+                <strong>What are you interrested in</strong>
+                <select>
+                    <option>Multi-Family Homes</option>
+                    <option>Concrete</option>
+                    <option>Sewage</option>
+                    <option>Housing</option>
+                    <option>Towers</option>
+                    <option>High-Rises</option>
+                </select>
             </div>
             <button onClick = {handleSubmit}>Create Account</button>
         </div>

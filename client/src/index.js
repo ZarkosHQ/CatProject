@@ -19,7 +19,7 @@ root.render(
           <Route exact path="/SignUp/SellerSignUp" element={<Template children={<LoginScreenBase children={<CreateSellerForm/>} />}/>}/>
           <Route exact path="/SignUp/BuyerSignUp" element={<Template children={<LoginScreenBase children={<CreateBuyerForm/>}/>}/>}/> 
 
-          <Route path='*' element={"Page Not Found shorty"}/>
+          <Route path='*' element={"Page Not Found"}/>
 
           </Routes>
       </Router>
