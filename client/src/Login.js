@@ -145,6 +145,7 @@ function CreateSellerForm(){
     const [lastName, setLastName] = useState()
     const [email, setEmail] = useState()
     const [password, setPassword] = useState()
+    const [selectedCountry, setSelectedCountry] = useState(''); //Not yet included in axios.post
     const navigate = useNavigate()
 
     const handleSubmit = (e) => {
@@ -153,8 +154,28 @@ function CreateSellerForm(){
         .then(result => {console.log(result)
             navigate("/login")
         })
-        .catch(err=> openModal("Login Failed","Account Creation Failed"))
+            .catch(err => openModal("Login Failed", "Account Creation Failed"))
+
+        
     }
+
+    //Used to keep track of the countries list
+    const countriesList = [
+        'USA',
+        'Canada',
+        'United Kingdom',
+        'Australia',
+        'Germany',
+        'France',
+        'Japan',
+        // Can add more countries here, didn't want to make a list of every country in the world (yet)
+    ];
+
+    //Handles changes to the country dropdown
+    //NOTE: Country will NOT currently throw an error when the default is selected, this should be changed at a later date
+    const handleCountryChange = (e) => {
+        setSelectedCountry(e.target.value);
+    };
 
     return (
         <div className="SellerForm">
@@ -181,7 +202,12 @@ function CreateSellerForm(){
 
             <div className="InputFields">
                 <strong>Country</strong>
-                <input type="text" placeholder="Enter country of operation" />
+                <select value={selectedCountry} onChange={handleCountryChange}>
+                    <option value="">Select country</option>
+                    {countriesList.map((country, index) => (
+                        <option key={index} value={country}>{country}</option>
+                    ))}
+                </select>
             </div>
             <div className="InputFields">
                 <strong>Legal Business Name</strong>
