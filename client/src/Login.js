@@ -174,7 +174,7 @@ function CreateSellerForm(){
             </div>
             <div className="InputFields">
                 <strong>Password</strong>
-                <input type="password" placeholder="EEnter password" onChange={(e) => setPassword(e.target.value)} />
+                <input type="password" placeholder="Enter password" onChange={(e) => setPassword(e.target.value)} />
             </div>
 
             <strong>Business information</strong>
@@ -184,11 +184,11 @@ function CreateSellerForm(){
                 <input type="text" placeholder="Enter country of operation" />
             </div>
             <div className="InputFields">
-                <strong>Legal Buisines Name</strong>
-                <input type="text" placeholder="Enter name of buisiness" />
+                <strong>Legal Business Name</strong>
+                <input type="text" placeholder="Enter name of business" />
             </div>
             <div className="InputFields">
-                <strong>Buisines Identification Number(BIN)</strong>
+                <strong>Business Identification Number(BIN)</strong>
                 <input type="text" placeholder="Bin number" />
             </div>
             <div className="InputFields">
