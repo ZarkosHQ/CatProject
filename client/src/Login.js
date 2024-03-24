@@ -132,7 +132,7 @@ function CreateAccountForm(){
     return(
         <div className="CreateAccountForm">
             
-            <button className={myNav==0 ? "LinkButton toPageButton" : "LinkButton"} onClick={()=>setNav(0)}>Create Seller Accout</button>
+            <button className={myNav==0 ? "LinkButton toPageButton" : "LinkButton"} onClick={()=>setNav(0)}>Create Seller Account</button>
             <button className={myNav==1 ? "LinkButton toPageButton" : "LinkButton"} onClick={()=>setNav(1)}>Create Buyer Account</button>
             <button className="LinkButton" onClick={()=>handleNav()}>Continue</button>
 
@@ -145,17 +145,26 @@ function CreateSellerForm(){
     const [lastName, setLastName] = useState()
     const [email, setEmail] = useState()
     const [password, setPassword] = useState()
-    const [selectedCountry, setSelectedCountry] = useState(''); //Not yet included in axios.post
+    const [selectedCountry, setSelectedCountry] = useState('');
+    const [inquiry, setInquiry] = useState();
+    const [biz, setBiz] = useState();
+    const [bin, setBin] = useState();
     const navigate = useNavigate()
 
     const handleSubmit = (e) => {
         e.preventDefault()
-        axios.post('http://localhost:5000/auth/signup', {type: "seller", firstName:firstName, lastName: lastName, email: email, password: password})
+        axios.post('http://localhost:5000/auth/signup', {type: "seller", firstName:firstName, lastName: lastName, email: email, password: password,
+            country: selectedCountry,
+            seller: {
+                businessName: biz,
+                bin: bin,
+                inquiry: inquiry
+            }
+        })
         .then(result => {console.log(result)
             navigate("/login")
         })
-            .catch(err => openModal("Login Failed", "Account Creation Failed"))
-
+        .catch(err=> openModal("Login Failed",`Account Creation Failed: ${err.response.data.reason}`))
         
     }
 
@@ -172,14 +181,17 @@ function CreateSellerForm(){
     ];
 
     //Handles changes to the country dropdown
-    //NOTE: Country will NOT currently throw an error when the default is selected, this should be changed at a later date
     const handleCountryChange = (e) => {
         setSelectedCountry(e.target.value);
     };
 
+    const changeInquiry = (e) => {
+        setInquiry(e.target.value);
+    };
+
     return (
         <div className="SellerForm">
-            <h2>Join as Vender</h2>
+            <h2>Join as Vendor</h2>
             <strong>Contact information</strong>
             <div className="InputFields">
                 <strong>First Name</strong>
@@ -203,7 +215,7 @@ function CreateSellerForm(){
             <div className="InputFields">
                 <strong>Country</strong>
                 <select value={selectedCountry} onChange={handleCountryChange}>
-                    <option value="">Select country</option>
+                    <option selected disabled value="">Select country</option>
                     {countriesList.map((country, index) => (
                         <option key={index} value={country}>{country}</option>
                     ))}
@@ -211,15 +223,16 @@ function CreateSellerForm(){
             </div>
             <div className="InputFields">
                 <strong>Legal Business Name</strong>
-                <input type="text" placeholder="Enter name of business" />
+                <input type="text" placeholder="Enter name of business" onChange={e => setBiz(e.target.value)}/>
             </div>
             <div className="InputFields">
                 <strong>Business Identification Number(BIN)</strong>
-                <input type="text" placeholder="Bin number" />
+                <input type="text" placeholder="BIN number" onChange={e => setBin(e.target.value)}/>
             </div>
             <div className="InputFields">
                 <strong>Inquiry Design</strong>
-                <select>
+                <select onChange={changeInquiry} value={inquiry}>
+                    <option disabled selected>Select an option</option>
                     <option>Modern</option>
                     <option>Rustic</option>
                     <option>Cost effective</option>
@@ -227,7 +240,7 @@ function CreateSellerForm(){
                     <option>Custom</option>
                 </select>
             </div>
-            <button onClick = {handleSubmit}>Continue to Verify</button>
+            <button onClick = {handleSubmit}>Continue</button>
         </div>
     )
 }
@@ -237,17 +250,28 @@ function CreateBuyerForm(){
     const [email, setEmail]         = useState();
     const [password, setPassword]   = useState();
     const [country, setCountry]     = useState();
+    const [interest, setInterest]   = useState();
+    const [experience, setExperience] = useState();
     const navigate = useNavigate()
 
     const handleSubmit = (e) => {
         e.preventDefault()
         axios.post('http://localhost:5000/auth/signup', 
-        {type: "buyer",firstName:firstName, lastName: lastName, email: email, password: password})
+        {type: "buyer",firstName:firstName, lastName: lastName, email: email, password: password, country: country,
+            buyer: {
+                interest: interest,
+                experience: experience
+            }
+        })
         .then(result => {console.log(result)
             navigate("/login")
         })
-        .catch(err=> openModal("Login Failed","Account Creation Failed"))
+        .catch(err=> openModal("Login Failed",`Account Creation Failed: ${err.response.data.reason}`))
     }
+
+    const handleInterestChange = (e) => {
+        setInterest(e.target.value);
+    };
 
     return (
         <div className="BuyerForm">
@@ -275,11 +299,12 @@ function CreateBuyerForm(){
             </div>
             <div className="InputFields">
                 <strong>Experience</strong>
-                <input type="text" placeholder="Describe your expertise" />
+                <input type="text" placeholder="Describe your expertise" onChange={e => setExperience(e.target.value)}/>
             </div>
             <div className="InputFields">
-                <strong>What are you interrested in</strong>
-                <select>
+                <strong>What are you interested in</strong>
+                <select value={interest} onChange={handleInterestChange}>
+                    <option disabled selected>Select your interest</option>
                     <option>Multi-Family Homes</option>
                     <option>Concrete</option>
                     <option>Sewage</option>
