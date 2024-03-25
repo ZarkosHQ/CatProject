@@ -3,6 +3,7 @@ import "./Login.scss";
 import "./branding.scss";
 import { useState } from "react";
 import axios from "axios";
+import { GoogleLogin,GoogleOAuthProvider } from '@react-oauth/google';
 
 function openModal(header, message){
     const modal = document.getElementById("MyModal");
@@ -91,28 +92,39 @@ function LoginForm(){
     }
 
     return(
-        <div className="LoginForm">
-            
-            <div className="InputFields">
-                <strong>Email</strong>
-                <input type="email" placeholder="Ex. Example@email.com" onChange={(e) => setEmail(e.target.value)} />
-            </div>
-            <div className="InputFields">
-                <strong>Password</strong>
-                <input type="password" placeholder="Enter password" onChange={(e) => setPassword(e.target.value)}/>
-            </div>
+        <GoogleOAuthProvider clientId="868741849492-ias2jaeoigl0pls8ji5qlqrmcn2h41c5.apps.googleusercontent.com">
+            <div className="LoginForm">
+                
+                <div className="InputFields">
+                    <strong>Email</strong>
+                    <input type="email" placeholder="Ex. Example@email.com" onChange={(e) => setEmail(e.target.value)} />
+                </div>
+                <div className="InputFields">
+                    <strong>Password</strong>
+                    <input type="password" placeholder="Enter password" onChange={(e) => setPassword(e.target.value)}/>
+                </div>
 
-            <strong>OR</strong>
+                <strong>OR</strong>
 
-            <button className="LinkButton">  <div className="google"></div> Continue with google</button>
-            <button className="LinkButton facebook"> <div>f</div> <span>Continue with facebook</span></button>
-            <button className="LinkButton">Continue with pearson membership</button>
+                <div className="LinkButton">
+                    <GoogleLogin
+                        onSuccess={credentialResponse => {
+                            console.log(credentialResponse);
+                        }}
+                        onError={() => {
+                            console.log('Login Failed');
+                        }}
+                    />
+                </div>
+                <button className="LinkButton facebook"> <div>f</div> <span>Continue with facebook</span></button>
+                <button className="LinkButton">Continue with pearson membership</button>
 
-            <div>
-                <button onClick={()=>{nav("/SignUp")}}> Create Account</button>
-                <button onClick={handleSubmit}> Login </button>
+                <div>
+                    <button onClick={()=>{nav("/SignUp")}}> Create Account</button>
+                    <button onClick={handleSubmit}> Login </button>
+                </div>
             </div>
-        </div>
+        </GoogleOAuthProvider>
     )
 }
 
