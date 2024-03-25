@@ -1,8 +1,7 @@
 const dbo = require("../db/conn");
 const argon = require("argon2");
-const { 
-    v4: uuidv4
-} = require('uuid');
+const sessionAuth = require('./session-auth');
+
   
 module.exports = (app) => {
     app.post("/auth/signup", async (request, response) => {
@@ -76,13 +75,8 @@ module.exports = (app) => {
         if (toAuth) {
             const authResult = await argon.verify(toAuth.password, request.body.password);
             if (authResult) {
-                const t = uuidv4();
-                const tokenCursor = dbo.collection("tokens");
                 delete toAuth.password;
-                tokenCursor.insertOne({
-                    user: toAuth._id,
-                    token: t
-                });
+                const t = await sessionAuth.beginSession(toAuth);
                 response.send({
                     status: 'success',
                     token: t,
