@@ -110,6 +110,9 @@ function LoginForm(){
                     <GoogleLogin
                         onSuccess={credentialResponse => {
                             console.log(credentialResponse);
+                            axios.post('http://localhost:5000/auth/google', {
+                                jwt: credentialResponse.credential
+                            })
                         }}
                         onError={() => {
                             console.log('Login Failed');
