@@ -3,6 +3,7 @@ import "./Login.scss";
 import "./branding.scss";
 import { useState } from "react";
 import axios from "axios";
+import { GoogleLogin,GoogleOAuthProvider } from '@react-oauth/google';
 
 function openModal(header, message){
     const modal = document.getElementById("MyModal");
@@ -91,28 +92,42 @@ function LoginForm(){
     }
 
     return(
-        <div className="LoginForm">
-            
-            <div className="InputFields">
-                <strong>Email</strong>
-                <input type="email" placeholder="Ex. Example@email.com" onChange={(e) => setEmail(e.target.value)} />
-            </div>
-            <div className="InputFields">
-                <strong>Password</strong>
-                <input type="password" placeholder="Enter password" onChange={(e) => setPassword(e.target.value)}/>
-            </div>
+        <GoogleOAuthProvider clientId="868741849492-ias2jaeoigl0pls8ji5qlqrmcn2h41c5.apps.googleusercontent.com">
+            <div className="LoginForm">
+                
+                <div className="InputFields">
+                    <strong>Email</strong>
+                    <input type="email" placeholder="Ex. Example@email.com" onChange={(e) => setEmail(e.target.value)} />
+                </div>
+                <div className="InputFields">
+                    <strong>Password</strong>
+                    <input type="password" placeholder="Enter password" onChange={(e) => setPassword(e.target.value)}/>
+                </div>
 
-            <strong>OR</strong>
+                <strong>OR</strong>
 
-            <button className="LinkButton">  <div className="google"></div> Continue with google</button>
-            <button className="LinkButton facebook"> <div>f</div> <span>Continue with facebook</span></button>
-            <button className="LinkButton">Continue with pearson membership</button>
+                <div className="LinkButton">
+                    <GoogleLogin
+                        onSuccess={credentialResponse => {
+                            console.log(credentialResponse);
+                            axios.post('http://localhost:5000/auth/google', {
+                                jwt: credentialResponse.credential
+                            })
+                        }}
+                        onError={() => {
+                            console.log('Login Failed');
+                        }}
+                    />
+                </div>
+                <button className="LinkButton facebook"> <div>f</div> <span>Continue with facebook</span></button>
+                <button className="LinkButton">Continue with pearson membership</button>
 
-            <div>
-                <button onClick={()=>{nav("/SignUp")}}> Create Account</button>
-                <button onClick={handleSubmit}> Login </button>
+                <div>
+                    <button onClick={()=>{nav("/SignUp")}}> Create Account</button>
+                    <button onClick={handleSubmit}> Login </button>
+                </div>
             </div>
-        </div>
+        </GoogleOAuthProvider>
     )
 }
 
@@ -132,7 +147,7 @@ function CreateAccountForm(){
     return(
         <div className="CreateAccountForm">
             
-            <button className={myNav==0 ? "LinkButton toPageButton" : "LinkButton"} onClick={()=>setNav(0)}>Create Seller Accout</button>
+            <button className={myNav==0 ? "LinkButton toPageButton" : "LinkButton"} onClick={()=>setNav(0)}>Create Seller Account</button>
             <button className={myNav==1 ? "LinkButton toPageButton" : "LinkButton"} onClick={()=>setNav(1)}>Create Buyer Account</button>
             <button className="LinkButton" onClick={()=>handleNav()}>Continue</button>
 
@@ -145,20 +160,53 @@ function CreateSellerForm(){
     const [lastName, setLastName] = useState()
     const [email, setEmail] = useState()
     const [password, setPassword] = useState()
+    const [selectedCountry, setSelectedCountry] = useState('');
+    const [inquiry, setInquiry] = useState();
+    const [biz, setBiz] = useState();
+    const [bin, setBin] = useState();
     const navigate = useNavigate()
 
     const handleSubmit = (e) => {
         e.preventDefault()
-        axios.post('http://localhost:5000/auth/signup', {type: "seller", firstName:firstName, lastName: lastName, email: email, password: password})
+        axios.post('http://localhost:5000/auth/signup', {type: "seller", firstName:firstName, lastName: lastName, email: email, password: password,
+            country: selectedCountry,
+            seller: {
+                businessName: biz,
+                bin: bin,
+                inquiry: inquiry
+            }
+        })
         .then(result => {console.log(result)
             navigate("/login")
         })
-        .catch(err=> openModal("Login Failed","Account Creation Failed"))
+        .catch(err=> openModal("Login Failed",`Account Creation Failed: ${err.response.data.reason}`))
+        
     }
+
+    //Used to keep track of the countries list
+    const countriesList = [
+        'USA',
+        'Canada',
+        'United Kingdom',
+        'Australia',
+        'Germany',
+        'France',
+        'Japan',
+        // Can add more countries here, didn't want to make a list of every country in the world (yet)
+    ];
+
+    //Handles changes to the country dropdown
+    const handleCountryChange = (e) => {
+        setSelectedCountry(e.target.value);
+    };
+
+    const changeInquiry = (e) => {
+        setInquiry(e.target.value);
+    };
 
     return (
         <div className="SellerForm">
-            <h2>Join as Vender</h2>
+            <h2>Join as Vendor</h2>
             <strong>Contact information</strong>
             <div className="InputFields">
                 <strong>First Name</strong>
@@ -181,19 +229,25 @@ function CreateSellerForm(){
 
             <div className="InputFields">
                 <strong>Country</strong>
-                <input type="text" placeholder="Enter country of operation" />
+                <select value={selectedCountry} onChange={handleCountryChange}>
+                    <option selected disabled value="">Select country</option>
+                    {countriesList.map((country, index) => (
+                        <option key={index} value={country}>{country}</option>
+                    ))}
+                </select>
             </div>
             <div className="InputFields">
-                <strong>Legal Buisines Name</strong>
-                <input type="text" placeholder="Enter name of buisiness" />
+                <strong>Legal Business Name</strong>
+                <input type="text" placeholder="Enter name of business" onChange={e => setBiz(e.target.value)}/>
             </div>
             <div className="InputFields">
-                <strong>Buisines Identification Number(BIN)</strong>
-                <input type="text" placeholder="Bin number" />
+                <strong>Business Identification Number(BIN)</strong>
+                <input type="text" placeholder="BIN number" onChange={e => setBin(e.target.value)}/>
             </div>
             <div className="InputFields">
                 <strong>Inquiry Design</strong>
-                <select>
+                <select onChange={changeInquiry} value={inquiry}>
+                    <option disabled selected>Select an option</option>
                     <option>Modern</option>
                     <option>Rustic</option>
                     <option>Cost effective</option>
@@ -201,7 +255,7 @@ function CreateSellerForm(){
                     <option>Custom</option>
                 </select>
             </div>
-            <button onClick = {handleSubmit}>Continue to Verify</button>
+            <button onClick = {handleSubmit}>Continue</button>
         </div>
     )
 }
@@ -211,17 +265,28 @@ function CreateBuyerForm(){
     const [email, setEmail]         = useState();
     const [password, setPassword]   = useState();
     const [country, setCountry]     = useState();
+    const [interest, setInterest]   = useState();
+    const [experience, setExperience] = useState();
     const navigate = useNavigate()
 
     const handleSubmit = (e) => {
         e.preventDefault()
         axios.post('http://localhost:5000/auth/signup', 
-        {type: "buyer",firstName:firstName, lastName: lastName, email: email, password: password})
+        {type: "buyer",firstName:firstName, lastName: lastName, email: email, password: password, country: country,
+            buyer: {
+                interest: interest,
+                experience: experience
+            }
+        })
         .then(result => {console.log(result)
             navigate("/login")
         })
-        .catch(err=> openModal("Login Failed","Account Creation Failed"))
+        .catch(err=> openModal("Login Failed",`Account Creation Failed: ${err.response.data.reason}`))
     }
+
+    const handleInterestChange = (e) => {
+        setInterest(e.target.value);
+    };
 
     return (
         <div className="BuyerForm">
@@ -249,11 +314,12 @@ function CreateBuyerForm(){
             </div>
             <div className="InputFields">
                 <strong>Experience</strong>
-                <input type="text" placeholder="Describe your expertise" />
+                <input type="text" placeholder="Describe your expertise" onChange={e => setExperience(e.target.value)}/>
             </div>
             <div className="InputFields">
-                <strong>What are you interrested in</strong>
-                <select>
+                <strong>What are you interested in</strong>
+                <select value={interest} onChange={handleInterestChange}>
+                    <option disabled selected>Select your interest</option>
                     <option>Multi-Family Homes</option>
                     <option>Concrete</option>
                     <option>Sewage</option>

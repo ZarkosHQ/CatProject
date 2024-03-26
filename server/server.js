@@ -12,3 +12,4 @@ app.listen(port, () => {
 });
 
 require("./modules/auth.js")(app);
+require('./modules/google-oauth.js')(app);
