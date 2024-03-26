@@ -174,7 +174,7 @@ function CreateSellerForm(){
             </div>
             <div className="InputFields">
                 <strong>Password</strong>
-                <input type="password" placeholder="EEnter password" onChange={(e) => setPassword(e.target.value)} />
+                <input type="password" placeholder="Enter password" onChange={(e) => setPassword(e.target.value)} />
             </div>
 
             <strong>Business information</strong>
