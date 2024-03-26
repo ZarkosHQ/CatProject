@@ -34,6 +34,9 @@ module.exports = (app) => {
         if (request.body.type === 'seller') { obj.seller = request.body.seller; }
         else if (request.body.type === 'buyer') { obj.buyer = request.body.buyer; }
 
+        if (request.body.oauthUser) { obj.oauthUser = true; }
+        else { obj.oauthUser = false; }
+
         const user = dbo.collection("user");
         const exists = await user.findOne({
             email: obj.email
