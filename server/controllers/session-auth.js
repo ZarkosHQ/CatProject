@@ -1,20 +1,18 @@
-const dbo = require("../db/conn");
 const { 
     v4: uuidv4
 } = require('uuid');
+const Token = require('../models/token-model');
 
 module.exports = {
     verifyToken: async (token) => {
-        const tokens = dbo.collection("tokens");
-        let t = await tokens.findOne({
+        let t = await Token.findOne({
             token: token
         });
         return t;
     },
     beginSession: async (user) => {
         const t = uuidv4();
-        const tokenCursor = dbo.collection("tokens");
-        await tokenCursor.insertOne({
+        await Token.create({
             user: user._id,
             token: t
         });

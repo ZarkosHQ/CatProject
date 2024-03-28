@@ -20,6 +20,7 @@
     "jsonwebtoken": "^9.0.2",
     "jwt-decode": "^4.0.0",
     "mongodb": "^6.4.0",
+    "mongoose": "^8.2.3",
     "npm": "^10.5.0",
     "uuid": "^9.0.1"
   }
