@@ -1,6 +1,6 @@
 const User = require('../models/user-model');
 const argon = require("argon2");
-const sessionAuth = require("../controllers/session-auth");
+const sessionAuth = require("./session-control");
 const { signUpOAuth } = require("./google-oauth");
 
 module.exports = {
@@ -72,13 +72,12 @@ module.exports = {
 
         try {
             if (request.body.type === 'seller') { 
-                let changeOfName = request.body.seller;
-                changeOfName.businessId = changeOfName.bin;
-                obj.seller = changeOfName; 
+                obj.seller = request.body.seller;
             }
             else if (request.body.type === 'buyer') { 
                 obj.buyer = request.body.buyer;
             }
+            obj.isAdmin = false;
             await User.create(obj);
             response.send({
                 status: 'success',
@@ -108,12 +107,12 @@ module.exports = {
         if (toAuth) {
             const authResult = await argon.verify(toAuth.password, request.body.password);
             if (authResult) {
-                delete toAuth.password;
                 const t = await sessionAuth.beginSession(toAuth);
+                const redacted = {...toAuth._doc, password: undefined};
                 response.send({
                     status: 'success',
                     token: t,
-                    user: toAuth,
+                    user: redacted,
                 });
             }
             else {

@@ -19,7 +19,8 @@ const userSchema = new Schema({
         default: new Date()
     },
     OAuth: Boolean,
-    OAuthConfig: OAuthConfig
+    OAuthConfig: OAuthConfig,
+    isAdmin: Boolean
 });
 
 const User = model('User', userSchema);

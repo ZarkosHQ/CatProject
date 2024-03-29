@@ -8,14 +8,19 @@ module.exports = {
         let t = await Token.findOne({
             token: token
         });
+        if (new Date(t.expires) < new Date()) {
+            return undefined;
+        }
         return t;
     },
     beginSession: async (user) => {
         const t = uuidv4();
-        await Token.create({
+        const token = {
             user: user._id,
-            token: t
-        });
-        return t;
+            token: t,
+            expires: new Date(new Date().getTime() + (1000 * 3600 * 24 * 7))
+        };
+        await Token.create(token);
+        return token;
     }
 }

@@ -1,6 +1,6 @@
 const client_id = process.env.GOOGLE_CLIENT_ID;
 const jwtDecode = require("jwt-decode");
-const sessionAuth = require('./session-auth');
+const sessionAuth = require('./session-control');
 
 const User = require('../models/user-model');
 
