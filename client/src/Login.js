@@ -78,12 +78,27 @@ function LoginForm(){
     const [password, setPassword] = useState()
     const nav = useNavigate();
 
+    if(localStorage.getItem("token")){
+        //check if there is currently a session token/valid one
+        const token = JSON.parse(localStorage.getItem("token"))
+        if (token && token.expirationDate) {
+            const expirationDate = new Date(token.expirationDate);
+            const currentDate = new Date();
+            
+            if (currentDate < expirationDate) {
+                // Token is still valid
+                nav("/DashBoard")
+            } 
+        }
+    }
+    
     const handleSubmit = (e) => {
         e.preventDefault()
         axios.post('http://localhost:5000/auth/login', {email: email, password: password})
         .then(result => {console.log(result)
             if(result.data.status == "success"){
                 localStorage.setItem("token", result.data.token)
+                localStorage.setItem("user", result.data.user)
                 nav("/DashBoard")
             }
             else console.log(result.data.reason)
@@ -161,7 +176,7 @@ function CreateSellerForm(){
     const [email, setEmail] = useState()
     const [password, setPassword] = useState()
     const [selectedCountry, setSelectedCountry] = useState('');
-    const [inquiry, setInquiry] = useState();
+    const [subType, setSubType] = useState();
     const [biz, setBiz] = useState();
     const [bin, setBin] = useState();
     const navigate = useNavigate()
@@ -172,8 +187,8 @@ function CreateSellerForm(){
             country: selectedCountry,
             seller: {
                 businessName: biz,
-                bin: bin,
-                inquiry: inquiry
+                businessID: bin,
+                subType: subType
             }
         })
         .then(result => {console.log(result)
@@ -200,8 +215,8 @@ function CreateSellerForm(){
         setSelectedCountry(e.target.value);
     };
 
-    const changeInquiry = (e) => {
-        setInquiry(e.target.value);
+    const changeSubType = (e) => {
+        setSubType(e.target.value);
     };
 
     return (
@@ -245,14 +260,14 @@ function CreateSellerForm(){
                 <input type="text" placeholder="BIN number" onChange={e => setBin(e.target.value)}/>
             </div>
             <div className="InputFields">
-                <strong>Inquiry Design</strong>
-                <select onChange={changeInquiry} value={inquiry}>
+                <strong>Seller Type</strong>
+                <select onChange={changeSubType} value={subType}>
                     <option disabled selected>Select an option</option>
-                    <option>Modern</option>
-                    <option>Rustic</option>
-                    <option>Cost effective</option>
-                    <option>Large Scale Operation</option>
-                    <option>Custom</option>
+                    <option>Architect</option>
+                    <option>Contractor</option>
+                    <option>Type3</option>
+                    <option>Type4</option>
+                    <option>type5</option>
                 </select>
             </div>
             <button onClick = {handleSubmit}>Continue</button>
