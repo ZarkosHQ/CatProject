@@ -3,7 +3,8 @@ import "./Login.scss";
 import "./branding.scss";
 import { useState } from "react";
 import axios from "axios";
-import { GoogleLogin,GoogleOAuthProvider } from '@react-oauth/google';
+import { GoogleLogin, GoogleOAuthProvider } from '@react-oauth/google';
+import FacebookLogin from '@greatsumini/react-facebook-login';
 
 function openModal(header, message){
     const modal = document.getElementById("MyModal");
@@ -73,6 +74,24 @@ function LoginScreenBase({children}){
     );
 }
 
+
+//Facebook front
+const responseFacebook = async (response) => {
+    // Handle Facebook login response here
+    console.log(response);
+    // Send the Facebook JWT to the server for verification and login
+    axios.post('http://localhost:5000/auth/facebook', {
+        jwt: response.accessToken
+    }).then(result => {
+        // Handle server response after Facebook OAuth login
+        console.log(result);
+        if (result.data.status === 'success') {
+            localStorage.setItem('token', result.data.token);
+        } else {
+            openModal('Login Failed', result.data.reason);
+        }
+    }).catch(err => openModal('Login Failed', err.response.data.reason));
+};
 function LoginForm(){
     const [email, setEmail] = useState()
     const [password, setPassword] = useState()
@@ -134,9 +153,15 @@ function LoginForm(){
                         }}
                     />
                 </div>
-                <button className="LinkButton facebook"> <div>f</div> <span>Continue with facebook</span></button>
+                <div className="LinkButton Facebook">
+                <FacebookLogin
+                    appId="737362851712100"
+                    autoLoad={false}
+                    fields="name,email,picture"
+                    callback={responseFacebook}
+                />
+                </div>
                 <button className="LinkButton">Continue with pearson membership</button>
-
                 <div>
                     <button onClick={()=>{nav("/SignUp")}}> Create Account</button>
                     <button onClick={handleSubmit}> Login </button>
