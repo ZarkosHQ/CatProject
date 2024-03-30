@@ -2,6 +2,7 @@ const User = require('../models/user-model');
 const argon = require("argon2");
 const sessionAuth = require("./session-control");
 const { signUpOAuth } = require("./google-oauth");
+const { fbOauthLogin } = require("./fb-oauth");
 
 module.exports = {
     signup: async (request, response) => {
@@ -132,7 +133,7 @@ module.exports = {
     googleOauthLogin: (jwt) => {
 
     },
-    fbOauthLogin: (jwt) => {
-
+    fbOauthLogin: async (jwt) => {
+        await fbOauthLogin(jwt);
     }
 }
