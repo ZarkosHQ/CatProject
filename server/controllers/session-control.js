@@ -22,5 +22,9 @@ module.exports = {
         };
         await Token.create(token);
         return token;
+    },
+    verifyRequest: async (request) => {
+        const token = request.headers['Authorization'];
+        return await this.verifyToken(token);
     }
 }
