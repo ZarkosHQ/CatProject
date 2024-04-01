@@ -20,7 +20,8 @@ const userSchema = new Schema({
     },
     OAuth: Boolean,
     OAuthConfig: OAuthConfig,
-    isAdmin: Boolean
+    isAdmin: Boolean,
+    country: String
 });
 
 const User = model('User', userSchema);

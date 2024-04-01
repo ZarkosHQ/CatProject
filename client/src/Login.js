@@ -86,7 +86,7 @@ const responseFacebook = async (response) => {
         // Handle server response after Facebook OAuth login
         console.log(result);
         if (result.data.status === 'success') {
-            localStorage.setItem('token', result.data.token);
+            localStorage.setItem('token', JSON.stringify(result.data.token));
         } else {
             openModal('Login Failed', result.data.reason);
         }
@@ -116,8 +116,8 @@ function LoginForm(){
         axios.post('http://localhost:5000/auth/login', {email: email, password: password})
         .then(result => {console.log(result)
             if(result.data.status == "success"){
-                localStorage.setItem("token", result.data.token)
-                localStorage.setItem("user", result.data.user)
+                localStorage.setItem("token", JSON.stringify(result.data.token))
+                localStorage.setItem("user", JSON.stringify(result.data.user))
                 nav("/DashBoard")
             }
             else console.log(result.data.reason)

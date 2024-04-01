@@ -34,6 +34,7 @@ module.exports = {
             email: request.body.email,
             password: await argon.hash(request.body.password),
             type: request.body.type,
+            country: request.body.country
         };
 
         if (request.body.oauthUser) {
