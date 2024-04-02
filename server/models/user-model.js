@@ -21,7 +21,8 @@ const userSchema = new Schema({
     OAuth: Boolean,
     OAuthConfig: OAuthConfig,
     isAdmin: Boolean,
-    country: String
+    country: String,
+    postalCode: String,
 });
 
 const User = model('User', userSchema);
