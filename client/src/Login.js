@@ -335,7 +335,7 @@ function CreateBuyerForm(){
     const [password2, setPassword2]   = useState();
     const [selectedCountry, setSelectedCountry] = useState('');
     const [interest, setInterest]   = useState();
-    const [experience, setExperience] = useState();
+    const [postal, setPostal] = useState();
     const navigate = useNavigate()
 
     const handleSubmit = (e) => {
@@ -347,8 +347,8 @@ function CreateBuyerForm(){
             axios.post('http://localhost:5000/auth/signup', 
             {type: "buyer",firstName:firstName, lastName: lastName, email: email, password: password, country: selectedCountry,
                 buyer: {
-                    interest: interest,
-                    experience: experience
+                    interests: [interest],
+                    postalCode: postal
                 }
             })
             .then(result => {console.log(result)
@@ -380,17 +380,8 @@ function CreateBuyerForm(){
                 <input type="text" placeholder="Enter last name" onChange={(e) => setLastName(e.target.value)}/>
             </div>
             <div className="InputFields">
-                <strong>Country</strong>
-                <select value={selectedCountry} onChange={handleCountryChange}>
-                    <option selected disabled value="">Select country</option>
-                    {countriesList.map((country, index) => (
-                        <option key={index} value={country}>{country}</option>
-                    ))}
-                </select>
-            </div>
-            <div className="InputFields">
                 <strong>Email</strong>
-                <input type="email" placeholder="Ex. Example@email.com" onChange={(e) => setEmail(e.target.value)}/>
+                <input type="email" placeholder="Ex. example@email.com" onChange={(e) => setEmail(e.target.value)}/>
             </div>
             <div className="InputFields">
                 <strong>Password</strong>
@@ -401,19 +392,26 @@ function CreateBuyerForm(){
                 <input type="password" placeholder="Enter password" onChange={(e) => setPassword2(e.target.value)} />
             </div>
             <div className="InputFields">
-                <strong>Experience</strong>
-                <input type="text" placeholder="Describe your expertise" onChange={e => setExperience(e.target.value)}/>
+                <strong>Country</strong>
+                <select value={selectedCountry} onChange={handleCountryChange}>
+                    <option selected disabled value="">Select country</option>
+                    {countriesList.map((country, index) => (
+                        <option key={index} value={country}>{country}</option>
+                    ))}
+                </select>
             </div>
             <div className="InputFields">
-                <strong>What are you interested in</strong>
+                <strong>Postal Code (ZIP in U.S.)</strong>
+                <input type="text" placeholder="Postal Code" onChange={e => setPostal(e.target.value)}/>
+            </div>
+            <div className="InputFields">
+                <strong>Which of the following best describes you?</strong>
                 <select value={interest} onChange={handleInterestChange}>
-                    <option disabled selected>Select your interest</option>
-                    <option>Multi-Family Homes</option>
-                    <option>Concrete</option>
-                    <option>Sewage</option>
-                    <option>Housing</option>
-                    <option>Towers</option>
-                    <option>High-Rises</option>
+                    <option disabled selected>Select an option</option>
+                    <option value="home_6mo">I'm looking to purchase a home within the next 6 months</option>
+                    <option value="home_year">I'm looking to build or purchase a home within a year</option>
+                    <option value="printed_objects">I'm looking for 3D printed objects</option>
+                    <option value="no_preference">Just interested in 3D printing construction</option>
                 </select>
             </div>
             <button onClick = {handleSubmit}>Create Account</button>
