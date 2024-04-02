@@ -147,6 +147,22 @@ $secondary: whitesmoke;
 
 }
 
+.LinkButton{
+    width: 90%;
+    height: 2.25rem;
+    margin-left: 1rem;
+    margin-top: .25rem;
+    border-radius: 1rem;
+    background-color: white;
+    border: 2px solid black;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    &:hover{
+        background-color: $secondary;
+    }
+}
 
 .buttonLinkContainer{
     width: 100%;
