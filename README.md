@@ -1,7 +1,13 @@
 # CatProject
 
 To begin
-a
+open a temrinal
+CD into your groups folder 
+```cd brainstormers```
+Then in your respective directory
+you can either cd in Server or Client. or make a new terminal and follow these steps for both
+From within that folder you can npm run start your react apps.
+
 # SERVER
 cd into server and create a new console
 type in
