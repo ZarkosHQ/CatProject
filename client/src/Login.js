@@ -188,8 +188,8 @@ function CreateAccountForm(){
     return(
         <div className="CreateAccountForm">
             
-            <button className={myNav==0 ? "LinkButton toPageButton" : "LinkButton"} onClick={()=>setNav(0)}>Create Seller Account</button>
-            <button className={myNav==1 ? "LinkButton toPageButton" : "LinkButton"} onClick={()=>setNav(1)}>Create Buyer Account</button>
+            <button className={myNav==0 ? "LinkButton toPageButton" : "LinkButton"} onClick={()=>setNav(0)}>Create Vendor Account</button>
+            <button className={myNav==1 ? "LinkButton toPageButton" : "LinkButton"} onClick={()=>setNav(1)}>Create Customer Account</button>
             <button className="LinkButton" onClick={()=>handleNav()}>Continue</button>
 
         </div>
@@ -227,26 +227,33 @@ function CreateSellerForm(){
     const [lastName, setLastName] = useState()
     const [email, setEmail] = useState()
     const [password, setPassword] = useState()
+    const [password2, setPassword2] = useState()
     const [selectedCountry, setSelectedCountry] = useState('');
     const [subType, setSubType] = useState();
     const [biz, setBiz] = useState();
     const [bin, setBin] = useState();
+    const [zip, setZip] = useState();
     const navigate = useNavigate()
 
     const handleSubmit = (e) => {
         e.preventDefault()
-        axios.post('http://localhost:5000/auth/signup', {type: "seller", firstName:firstName, lastName: lastName, email: email, password: password,
-            country: selectedCountry,
-            seller: {
-                businessName: biz,
-                businessID: bin,
-                subType: subType
-            }
-        })
-        .then(result => {console.log(result)
-            navigate("/login")
-        })
-        .catch(err=> openModal("Login Failed",`Account Creation Failed: ${err.response.data.reason}`))
+        if(password != password2){
+            openModal(`Account Creation Failed: Passwords Do Not Match`)
+        }
+        else{
+            axios.post('http://localhost:5000/auth/signup', {type: "seller", firstName:firstName, lastName: lastName, email: email, password: password,
+                country: selectedCountry,
+                seller: {
+                    businessName: biz,
+                    businessID: bin,
+                    subType: subType
+                }
+            })
+            .then(result => {console.log(result)
+                navigate("/login")
+            })
+            .catch(err=> openModal("Login Failed",`Account Creation Failed: ${err.response.data.reason}`))
+        }
         
     }
 
@@ -279,6 +286,10 @@ function CreateSellerForm(){
                 <strong>Password</strong>
                 <input type="password" placeholder="Enter password" onChange={(e) => setPassword(e.target.value)} />
             </div>
+            <div className="InputFields">
+                <strong>Confirm Password</strong>
+                <input type="password" placeholder="Enter password" onChange={(e) => setPassword2(e.target.value)} />
+            </div>
 
             <strong>Business information</strong>
 
@@ -300,15 +311,17 @@ function CreateSellerForm(){
                 <input type="text" placeholder="BIN number" onChange={e => setBin(e.target.value)}/>
             </div>
             <div className="InputFields">
-                <strong>Seller Type</strong>
+                <strong>Industry Segment</strong>
                 <select onChange={changeSubType} value={subType}>
                     <option disabled selected>Select an option</option>
                     <option>Architect</option>
                     <option>Contractor</option>
-                    <option>Type3</option>
-                    <option>Type4</option>
-                    <option>type5</option>
+                    <option>CAT Employee</option>
                 </select>
+            </div>
+            <div className="InputFields">
+                <strong>Zipcode</strong>
+                <input type="text" placeholder="Zipcode" onChange={e => setZip(e.target.value)}/>
             </div>
             <button onClick = {handleSubmit}>Continue</button>
         </div>
@@ -319,6 +332,7 @@ function CreateBuyerForm(){
     const [lastName, setLastName]   = useState();
     const [email, setEmail]         = useState();
     const [password, setPassword]   = useState();
+    const [password2, setPassword2]   = useState();
     const [selectedCountry, setSelectedCountry] = useState('');
     const [interest, setInterest]   = useState();
     const [experience, setExperience] = useState();
@@ -326,17 +340,22 @@ function CreateBuyerForm(){
 
     const handleSubmit = (e) => {
         e.preventDefault()
-        axios.post('http://localhost:5000/auth/signup', 
-        {type: "buyer",firstName:firstName, lastName: lastName, email: email, password: password, country: selectedCountry,
-            buyer: {
-                interest: interest,
-                experience: experience
-            }
-        })
-        .then(result => {console.log(result)
-            navigate("/login")
-        })
-        .catch(err=> openModal("Login Failed",`Account Creation Failed: ${err.response.data.reason}`))
+        if(password != password2){
+            openModal(`Account Creation Failed: Passwords Do Not Match`)
+        }
+        else{
+            axios.post('http://localhost:5000/auth/signup', 
+            {type: "buyer",firstName:firstName, lastName: lastName, email: email, password: password, country: selectedCountry,
+                buyer: {
+                    interest: interest,
+                    experience: experience
+                }
+            })
+            .then(result => {console.log(result)
+                navigate("/login")
+            })
+            .catch(err=> openModal("Login Failed",`Account Creation Failed: ${err.response.data.reason}`))
+        }
     }
 
     //Handles changes to the country dropdown
@@ -376,6 +395,10 @@ function CreateBuyerForm(){
             <div className="InputFields">
                 <strong>Password</strong>
                 <input type="password" placeholder="Enter a password" onChange={(e) => setPassword(e.target.value)}/>
+            </div>
+            <div className="InputFields">
+                <strong>Confirm Password</strong>
+                <input type="password" placeholder="Enter password" onChange={(e) => setPassword2(e.target.value)} />
             </div>
             <div className="InputFields">
                 <strong>Experience</strong>
