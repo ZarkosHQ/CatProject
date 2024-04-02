@@ -139,8 +139,7 @@ function LoginForm(){
                 </div>
 
                 <strong>OR</strong>
-
-                <div className="LinkButton">
+                <div className="buttonLinkContainer">
                     <GoogleLogin
                         onSuccess={credentialResponse => {
                             console.log(credentialResponse);
@@ -152,16 +151,21 @@ function LoginForm(){
                             console.log('Login Failed');
                         }}
                     />
+                    <FacebookLogin
+                        appId="737362851712100"
+                        autoLoad={false}
+                        fields="name,email,picture"
+                        callback={responseFacebook}
+                        style={{
+                            backgroundColor: '#4267b2',
+                            color: '#fff',
+                            fontSize: '16px',
+                            padding: '12px 24px',
+                            border: 'none',
+                            borderRadius: '4px',
+                        }}
+                    />
                 </div>
-                <div className="LinkButton Facebook">
-                <FacebookLogin
-                    appId="737362851712100"
-                    autoLoad={false}
-                    fields="name,email,picture"
-                    callback={responseFacebook}
-                />
-                </div>
-                <button className="LinkButton">Continue with pearson membership</button>
                 <div>
                     <button onClick={()=>{nav("/SignUp")}}> Create Account</button>
                     <button onClick={handleSubmit}> Login </button>
