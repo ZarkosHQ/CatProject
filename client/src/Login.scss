@@ -227,6 +227,8 @@ $secondary: whitesmoke;
     background-color: white;
     display: flex;
     flex-direction: column;
+    overflow-y: scroll;
+    height: 65%;
     h2{
         margin: 0rem;
         padding: 0rem;
@@ -253,6 +255,7 @@ $secondary: whitesmoke;
         align-self: center;
         border: none;
         margin-bottom: 1rem;
+        min-height: 2.5rem;
         &:hover{
             background-color: black;
             border-color: black;
@@ -265,6 +268,7 @@ $secondary: whitesmoke;
     display: flex;
     flex-direction: column; 
     max-height: 40rem;
+    height: 65%;
     overflow-y: scroll;
     h2{
         margin: 0rem;

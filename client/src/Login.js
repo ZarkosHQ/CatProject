@@ -172,10 +172,11 @@ function LoginForm(){
 }
 
 function CreateAccountForm(){
-    const [myNav, setNav] = useState(); //default is /SignUp
+    const [myNav, setNav] = useState(undefined); //default is /SignUp
     const nav = useNavigate();
     function handleNav(){
-        if(myNav === null){
+        if(myNav === undefined){
+            openModal("Invalid Option","Please select an account type")
             //do nothing
         }else if(myNav === 0){
             nav("/SignUp/SellerSignUp");
